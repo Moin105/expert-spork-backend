@@ -33,22 +33,32 @@ export class UploadController {
     return this.uploadService.uploadFile(file);
   }
 
-  @Delete('image/:filename')
+  @Delete('image/:publicId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete an image file' })
   @ApiResponse({ status: 200, description: 'Image deleted successfully' })
-  async deleteImage(@Param('filename') filename: string) {
-    await this.uploadService.deleteFile(filename);
+  async deleteImage(@Param('publicId') publicId: string) {
+    await this.uploadService.deleteFile(publicId);
     return { message: 'Image deleted successfully' };
   }
 
-  @Get('image/:filename/info')
+  @Get('image/:publicId/info')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get image file information' })
   @ApiResponse({ status: 200, description: 'Image information retrieved successfully' })
-  async getImageInfo(@Param('filename') filename: string) {
-    return this.uploadService.getFileInfo(filename);
+  async getImageInfo(@Param('publicId') publicId: string) {
+    return this.uploadService.getFileInfo(publicId);
+  }
+
+  @Get('image/:publicId/optimized')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get optimized image URL' })
+  @ApiResponse({ status: 200, description: 'Optimized image URL generated successfully' })
+  async getOptimizedImageUrl(@Param('publicId') publicId: string) {
+    const url = this.uploadService.generateOptimizedUrl(publicId);
+    return { url };
   }
 }

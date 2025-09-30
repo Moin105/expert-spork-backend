@@ -13,6 +13,7 @@ import { EventsModule } from './events/events.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { HomepageModule } from './homepage/homepage.module';
 import { UploadModule } from './upload/upload.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 // Entities
 import { User } from './users/entities/user.entity';
@@ -47,6 +48,7 @@ import { HomepageContent } from './homepage/entities/homepage-content.entity';
     BlogsModule,
     HomepageModule,
     UploadModule,
+    CloudinaryModule,
   ],
 })
 export class AppModule {}

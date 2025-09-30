@@ -1,51 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import { promises as fs } from 'fs';
-import { join } from 'path';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class UploadService {
-  async uploadFile(file: Express.Multer.File): Promise<{ url: string; filename: string }> {
-    const uploadPath = process.env.UPLOAD_PATH || './uploads';
-    
-    // Ensure upload directory exists
-    try {
-      await fs.access(uploadPath);
-    } catch {
-      await fs.mkdir(uploadPath, { recursive: true });
-    }
+  constructor(private readonly cloudinaryService: CloudinaryService) {}
 
-    return {
-      url: `/uploads/${file.filename}`,
-      filename: file.filename,
-    };
-  }
-
-  async deleteFile(filename: string): Promise<void> {
-    const uploadPath = process.env.UPLOAD_PATH || './uploads';
-    const filePath = join(uploadPath, filename);
-    
+  async uploadFile(file: Express.Multer.File): Promise<{ url: string; filename: string; publicId: string }> {
     try {
-      await fs.unlink(filePath);
+      const result = await this.cloudinaryService.uploadImage(file);
+      
+      return {
+        url: result.secure_url,
+        filename: result.original_filename,
+        publicId: result.public_id,
+      };
     } catch (error) {
-      // File might not exist, which is fine
-      console.log(`File ${filename} not found for deletion`);
+      console.error('Error uploading file to Cloudinary:', error);
+      throw new Error('Failed to upload file');
     }
   }
 
-  async getFileInfo(filename: string): Promise<{ exists: boolean; size?: number }> {
-    const uploadPath = process.env.UPLOAD_PATH || './uploads';
-    const filePath = join(uploadPath, filename);
-    
+  async deleteFile(publicId: string): Promise<void> {
     try {
-      const stats = await fs.stat(filePath);
+      await this.cloudinaryService.deleteImage(publicId);
+    } catch (error) {
+      console.error('Error deleting file from Cloudinary:', error);
+      throw new Error('Failed to delete file');
+    }
+  }
+
+  async getFileInfo(publicId: string): Promise<{ exists: boolean; size?: number; url?: string }> {
+    try {
+      const result = await this.cloudinaryService.getImageInfo(publicId);
       return {
         exists: true,
-        size: stats.size,
+        size: result.bytes,
+        url: result.secure_url,
       };
-    } catch {
+    } catch (error) {
       return {
         exists: false,
       };
     }
+  }
+
+  generateOptimizedUrl(publicId: string, options: any = {}): string {
+    return this.cloudinaryService.generateOptimizedUrl(publicId, options);
   }
 }
