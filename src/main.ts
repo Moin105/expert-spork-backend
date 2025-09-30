@@ -14,10 +14,12 @@ async function bootstrap() {
       process.env.CORS_ORIGIN || 'http://localhost:3000',
       'http://localhost:3002', // CMS Admin
       'http://localhost:3000', // Main Project
+      'https://dashboard-byfoods.vercel.app', // ✅ trailing slash hatao
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
+  
 
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe({
