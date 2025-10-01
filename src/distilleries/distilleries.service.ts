@@ -40,7 +40,7 @@ export class DistilleriesService {
 
   async findOne(id: number): Promise<Distillery> {
     const distillery = await this.distilleryRepository.findOne({ 
-      where: { id, isActive: true } 
+      where: { id } 
     });
     if (!distillery) {
       throw new NotFoundException(`Distillery with ID ${id} not found`);
