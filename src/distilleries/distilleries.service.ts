@@ -22,7 +22,6 @@ export class DistilleriesService {
   async findAll(paginationDto: PaginationDto): Promise<{ data: Distillery[]; total: number }> {
     const { page = 1, limit = 10 } = paginationDto;
     const [data, total] = await this.distilleryRepository.findAndCount({
-      where: { isActive: true },
       skip: (page - 1) * limit,
       take: limit,
       order: { createdAt: 'DESC' },
@@ -64,8 +63,7 @@ export class DistilleriesService {
   async search(query: string): Promise<Distillery[]> {
     return this.distilleryRepository
       .createQueryBuilder('distillery')
-      .where('distillery.isActive = :isActive', { isActive: true })
-      .andWhere(
+      .where(
         '(distillery.name LIKE :query OR distillery.type LIKE :query OR distillery.location LIKE :query)',
         { query: `%${query}%` }
       )
