@@ -61,4 +61,15 @@ export class UploadController {
     const url = this.uploadService.generateOptimizedUrl(publicId);
     return { url };
   }
+
+  @Get('media')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all uploaded media files' })
+  @ApiResponse({ status: 200, description: 'Media files retrieved successfully' })
+  async getMediaFiles() {
+    // This would typically fetch from database or Cloudinary
+    // For now, return empty array as we don't have a media tracking system
+    return [];
+  }
 }

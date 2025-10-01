@@ -94,6 +94,10 @@ export async function seedDatabase(dataSource: DataSource) {
     }
   }
 
+  // Clear and recreate sample bars
+  await barRepository.clear();
+  console.log('🗑️ Cleared existing bars data');
+  
   // Create sample bars
   const existingBars = await barRepository.count();
   if (existingBars === 0) {
@@ -155,6 +159,10 @@ export async function seedDatabase(dataSource: DataSource) {
     console.log('✅ Sample bars created');
   }
 
+  // Clear and recreate sample distilleries
+  await distilleryRepository.clear();
+  console.log('🗑️ Cleared existing distilleries data');
+  
   // Create sample distilleries
   const existingDistilleries = await distilleryRepository.count();
   if (existingDistilleries === 0) {
@@ -204,6 +212,10 @@ export async function seedDatabase(dataSource: DataSource) {
     console.log('✅ Sample distilleries created');
   }
 
+  // Clear and recreate sample events
+  await eventRepository.clear();
+  console.log('🗑️ Cleared existing events data');
+  
   // Create sample events
   const existingEvents = await eventRepository.count();
   if (existingEvents === 0) {
