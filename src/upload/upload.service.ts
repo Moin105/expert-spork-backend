@@ -11,7 +11,7 @@ export class UploadService {
       
       return {
         url: result.secure_url,
-        filename: result.original_filename,
+        filename: result.original_filename || file.originalname,
         publicId: result.public_id,
       };
     } catch (error) {
